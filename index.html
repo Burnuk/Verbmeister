@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>B2 Verb-Quiz (100 Verben)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="B2 Deutsches Verb-Quiz: 100 Verben mit Erklärung und Beispielsatz – Multiple Choice, mobil uyumlu." />
+  <style>
+    /* iOS tap highlight off */
+    * { -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<footer class="mt-8 text-center text-xs text-gray-500">
+  İpucu: Seçimden sonra <span class="font-medium">Enter</span> = Devam
+  <div class="mt-2 text-gray-400">Made by Bilgehan Yakıcı</div>
+</footer>
+<body class="min-h-screen bg-gradient-to-b from-white to-gray-50">
+  <!-- Top Bar -->
+  <header class="sticky top-0 z-10 backdrop-blur bg-white/60 border-b border-gray-100">
+    <div class="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between">
+      <h1 class="text-lg md:text-xl font-semibold tracking-tight">B2 Verb‑Quiz</h1>
+      <nav class="text-sm text-gray-500">100 Verben • MC • Beispiele</nav>
+    </div>
+  </header>
+
+  <main class="p-6">
+    <div class="max-w-3xl mx-auto" id="app"></div>
+  </main>
+
+  <footer class="mt-8 pb-10 text-center text-xs text-gray-400">
+    Tipp: Seçimden sonra <span class="font-medium text-gray-600">Enter</span> = Devam
+  </footer>
+
+  <script>
+    // 100 B2-Verben – { verb, erklaerung, beispiel }
+    const DATA = [
+      { verb: "anstreben", erklaerung: "etwas als Ziel haben, erreichen wollen", beispiel: "Er strebt eine Karriere als Ingenieur an." },
+      { verb: "bewältigen", erklaerung: "eine schwierige Aufgabe/Situation erfolgreich lösen", beispiel: "Sie konnte die Prüfung trotz Stress bewältigen." },
+      { verb: "beeinflussen", erklaerung: "Wirkung auf etwas oder jemanden haben", beispiel: "Medien beeinflussen unser Konsumverhalten." },
+      { verb: "erschöpfen", erklaerung: "stark müde machen; Kräfte aufbrauchen", beispiel: "Die Hitze hat die Läufer erschöpft." },
+      { verb: "erfordern", erklaerung: "notwendig machen; verlangen", beispiel: "Der Beruf erfordert Teamfähigkeit." },
+      { verb: "gewährleisten", erklaerung: "sicherstellen, garantieren", beispiel: "Der Vertrag gewährleistet Datenschutz." },
+      { verb: "hinweisen (auf)", erklaerung: "aufmerksam machen, informieren", beispiel: "Das Schild weist auf die Gefahr hin." },
+      { verb: "überzeugen", erklaerung: "jemanden durch Argumente zum Einverständnis bringen", beispiel: "Sie überzeugte ihn mit klaren Fakten." },
+      { verb: "ausweichen", erklaerung: "einer Sache/Frage entgehen; zur Seite gehen", beispiel: "Er wich der kritischen Frage aus." },
+      { verb: "vorwerfen", erklaerung: "jemandem ein Fehlverhalten nennen/kritisieren", beispiel: "Sie warf ihm vor, zu spät gekommen zu sein." },
+      { verb: "vermeiden", erklaerung: "etwas absichtlich nicht tun", beispiel: "Wir sollten Missverständnisse vermeiden." },
+      { verb: "zögern", erklaerung: "unsicher sein, bevor man handelt", beispiel: "Er zögerte, die Wahrheit zu sagen." },
+      { verb: "sich sehnen (nach)", erklaerung: "einen starken Wunsch nach etwas haben", beispiel: "Sie sehnt sich nach Ruhe und Nähe." },
+      { verb: "widersprechen", erklaerung: "eine entgegengesetzte Meinung äußern", beispiel: "Er widersprach dem Vorschlag höflich." },
+      { verb: "sich bemühen", erklaerung: "sich viel Mühe geben", beispiel: "Er bemüht sich, jeden Tag Deutsch zu sprechen." },
+      { verb: "unterstützen", erklaerung: "Hilfe geben; fördern", beispiel: "Freunde unterstützen einander in schweren Zeiten." },
+      { verb: "übertragen", erklaerung: "weitergeben; auf anderes Gebiet anwenden", beispiel: "Die Idee lässt sich auf andere Projekte übertragen." },
+      { verb: "verzichten (auf)", erklaerung: "freiwillig etwas nicht haben/tun", beispiel: "Er verzichtet auf Zucker." },
+      { verb: "genehmigen", erklaerung: "offiziell erlauben", beispiel: "Die Behörde genehmigte den Bauantrag." },
+      { verb: "entstehen", erklaerung: "anfangen zu existieren, sich bilden", beispiel: "Zwischen den Nachbarn entstand Vertrauen." },
+      { verb: "bewahren", erklaerung: "erhalten, schützen", beispiel: "Sie bewahrt in Krisen die Ruhe." },
+      { verb: "einführen", erklaerung: "etwas Neues beginnen oder einsetzen", beispiel: "Die Firma führte flexible Arbeitszeiten ein." },
+      { verb: "feststellen", erklaerung: "erkennen, bemerken, feststellen", beispiel: "Der Arzt stellte eine Entzündung fest." },
+      { verb: "ergreifen", erklaerung: "aktiv nehmen/nutzen; Maßnahmen anwenden", beispiel: "Er ergriff sofort die Initiative." },
+      { verb: "bedrohen", erklaerung: "Gefahr für jemanden/etwas darstellen", beispiel: "Abgase bedrohen die Umwelt." },
+      { verb: "sich eignen (für)", erklaerung: "passend/tauglich sein", beispiel: "Das Zimmer eignet sich fürs Homeoffice." },
+      { verb: "gestalten", erklaerung: "formen, kreativ entwickeln", beispiel: "Sie gestaltet die Webseite neu." },
+      { verb: "enthalten", erklaerung: "als Inhalt haben", beispiel: "Das Paket enthält die Unterlagen." },
+      { verb: "verfügen (über)", erklaerung: "etwas besitzen/haben", beispiel: "Er verfügt über umfangreiche Erfahrung." },
+      { verb: "betreuen", erklaerung: "sich kümmern, begleiten", beispiel: "Die Lehrerin betreut die Gruppe auf der Fahrt." },
+      { verb: "hervorheben", erklaerung: "besonders betonen", beispiel: "Die Studie hebt Vorteile deutlich hervor." },
+      { verb: "beitragen (zu)", erklaerung: "Teil zu einem Ergebnis leisten", beispiel: "Jeder Beitrag trägt zum Erfolg bei." },
+      { verb: "fördern", erklaerung: "unterstützen, Entwicklung voranbringen", beispiel: "Das Programm fördert junge Talente." },
+      { verb: "klagen (über)", erklaerung: "sich beschweren", beispiel: "Er klagt über Rückenschmerzen." },
+      { verb: "abweichen (von)", erklaerung: "anders sein als; eine Richtung verlassen", beispiel: "Seine Ansicht weicht von der Norm ab." },
+      { verb: "sich weigern", erklaerung: "etwas absichtlich nicht tun wollen", beispiel: "Sie weigert sich, die Bedingungen zu akzeptieren." },
+      { verb: "drohen", erklaerung: "Gefahr ankündigen; eine Drohung aussprechen", beispiel: "Es droht ein Unwetter." },
+      { verb: "behandeln", erklaerung: "mit einem Thema/Menschen umgehen; therapieren", beispiel: "Der Arzt behandelt die Patientin gut." },
+      { verb: "überwinden", erklaerung: "eine Schwierigkeit besiegen", beispiel: "Sie hat die Angst überwunden." },
+      { verb: "beurteilen", erklaerung: "über etwas ein Urteil fällen", beispiel: "Er beurteilt die Lage nüchtern." },
+      { verb: "sich erkundigen (nach)", erklaerung: "Informationen einholen", beispiel: "Ich erkundige mich nach den Kosten." },
+      { verb: "erwerben", erklaerung: "durch Kauf/Lernen bekommen", beispiel: "Sie erwarb neue Kompetenzen." },
+      { verb: "beschleunigen", erklaerung: "schneller machen", beispiel: "Digitalisierung beschleunigt Prozesse." },
+      { verb: "bestätigen", erklaerung: "offiziell bekräftigen, dass etwas stimmt", beispiel: "Bitte bestätigen Sie den Termin." },
+      { verb: "sich beschäftigen (mit)", erklaerung: "Zeit/Aufmerksamkeit für etwas verwenden", beispiel: "Er beschäftigt sich mit KI." },
+      { verb: "bestehen (auf)", erklaerung: "auf etwas unbedingt Wert legen", beispiel: "Sie besteht auf Qualität." },
+      { verb: "durchführen", erklaerung: "praktisch umsetzen, ausführen", beispiel: "Wir führen eine Studie durch." },
+      { verb: "erscheinen", erklaerung: "sichtbar/verfügbar werden; wirken", beispiel: "Der Artikel erscheint morgen." },
+      { verb: "ermitteln", erklaerung: "durch Untersuchung herausfinden", beispiel: "Die Polizei ermittelt den Täter." },
+      { verb: "sich lohnen", erklaerung: "einen Nutzen bringen", beispiel: "Es lohnt sich, früh anzufangen." },
+      { verb: "einfallen", erklaerung: "spontan eine Idee bekommen", beispiel: "Mir fällt gerade nichts ein." },
+      { verb: "entwickeln", erklaerung: "Neues entwerfen/schaffen; sich weiterbilden", beispiel: "Sie entwickelt eine App." },
+      { verb: "verhindern", erklaerung: "stoppen, nicht geschehen lassen", beispiel: "Sicherheitsregeln verhindern Unfälle." },
+      { verb: "vorschlagen", erklaerung: "eine Idee zur Diskussion bringen", beispiel: "Ich schlage eine Pause vor." },
+      { verb: "anpassen", erklaerung: "ändern, damit es besser passt", beispiel: "Wir passen das Design an." },
+      { verb: "sich wundern", erklaerung: "überrascht sein", beispiel: "Ich wundere mich über das Ergebnis." },
+      { verb: "betrachten", erklaerung: "genau ansehen, analysieren", beispiel: "Er betrachtet das Gemälde lange." },
+      { verb: "ertragen", erklaerung: "etwas Unangenehmes aushalten", beispiel: "Sie erträgt die Hitze kaum." },
+      { verb: "widerstehen", erklaerung: "nicht nachgeben; standhalten", beispiel: "Er widersteht der Versuchung." },
+      { verb: "teilnehmen (an)", erklaerung: "bei etwas mitmachen", beispiel: "Viele nehmen am Workshop teil." },
+      { verb: "ausnutzen", erklaerung: "Vorteile aus etwas ziehen", beispiel: "Er nutzt jede Chance aus." },
+      { verb: "ankommen (auf)", erklaerung: "abhängen von", beispiel: "Es kommt auf die Details an." },
+      { verb: "widerlegen", erklaerung: "zeigen, dass etwas falsch ist", beispiel: "Die Daten widerlegen die These." },
+      { verb: "verhandeln", erklaerung: "diskutieren, um Einigung zu finden", beispiel: "Die Parteien verhandeln stundenlang." },
+      { verb: "abnehmen", erklaerung: "Gewicht/Anzahl verringern; leichter werden", beispiel: "Die Nachfrage nahm im Sommer ab." },
+      { verb: "zunehmen", erklaerung: "mehr/größer werden", beispiel: "Die Kosten nehmen jährlich zu." },
+      { verb: "zweifeln (an)", erklaerung: "unsicher sein über etwas", beispiel: "Er zweifelt an der Aussage." },
+      { verb: "unternehmen", erklaerung: "aktiv etwas machen/unternehmen", beispiel: "Wir unternehmen einen Ausflug." },
+      { verb: "leiden (an)", erklaerung: "krank sein; etwas Schweres ertragen", beispiel: "Sie leidet an Migräne." },
+      { verb: "genießen", erklaerung: "Freude an etwas haben", beispiel: "Sie genießt die Sonne am Rhein." },
+      { verb: "festlegen", erklaerung: "offiziell bestimmen", beispiel: "Der Termin wurde festgelegt." },
+      { verb: "angeben", erklaerung: "mitteilen; prahlen", beispiel: "Bitte geben Sie Ihre Adresse an." },
+      { verb: "bestehen (aus)", erklaerung: "zusammengesetzt sein aus", beispiel: "Das Team besteht aus fünf Personen." },
+      { verb: "herstellen", erklaerung: "produzieren; erzeugen", beispiel: "Die Firma stellt Möbel her." },
+      { verb: "sich benehmen", erklaerung: "bestimmtes Verhalten zeigen", beispiel: "Das Kind benimmt sich höflich." },
+      { verb: "ausreichen", erklaerung: "genug sein", beispiel: "Das Budget reicht für alles aus." },
+      { verb: "verschwinden", erklaerung: "nicht mehr sichtbar sein", beispiel: "Die Wolken verschwanden schnell." },
+      { verb: "auftreten", erklaerung: "erscheinen; auf der Bühne stehen", beispiel: "Die Band tritt heute Abend auf." },
+      { verb: "sich entschließen", erklaerung: "einen festen Entschluss fassen", beispiel: "Er entschloss sich zu studieren." },
+      { verb: "beweisen", erklaerung: "mit Fakten zeigen, dass etwas stimmt", beispiel: "Die Ergebnisse beweisen die Wirkung." },
+      { verb: "überqueren", erklaerung: "von einer Seite zur anderen gehen/fahren", beispiel: "Wir überqueren die Straße vorsichtig." },
+      { verb: "zustimmen", erklaerung: "einverstanden sein; Ja sagen", beispiel: "Der Rat stimmte dem Plan zu." },
+      { verb: "ablehnen", erklaerung: "nicht akzeptieren; Nein sagen", beispiel: "Sie lehnt das Angebot ab." },
+      { verb: "herausfinden", erklaerung: "entdecken; durch Suchen lernen", beispiel: "Er fand die Ursache heraus." },
+      { verb: "beschreiben", erklaerung: "mit Worten darstellen", beispiel: "Er beschreibt die Szene genau." },
+      { verb: "anrufen", erklaerung: "telefonisch kontaktieren", beispiel: "Ich rufe dich später an." },
+      { verb: "erweitern", erklaerung: "größer/umfassender machen", beispiel: "Wir erweitern das Angebot." },
+      { verb: "abschließen", erklaerung: "beenden; Vertrag/Studium zum Ende bringen", beispiel: "Sie schloss den Vertrag ab." },
+      { verb: "zerstören", erklaerung: "vollständig kaputt machen", beispiel: "Der Brand zerstörte das Lager." },
+      { verb: "vertrauen", erklaerung: "jemandem glauben; sich verlassen auf", beispiel: "Ich vertraue dir vollkommen." },
+      { verb: "bewundern", erklaerung: "etwas/ jemanden beeindruckend finden", beispiel: "Er bewundert die Architektur Heidelbergs." },
+      { verb: "erleichtern", erklaerung: "einfacher machen", beispiel: "Neue Tools erleichtern die Arbeit." },
+      { verb: "missverstehen", erklaerung: "etwas falsch verstehen", beispiel: "Sie hat seine Ironie missverstanden." },
+      { verb: "vertreten", erklaerung: "im Namen von jemandem handeln", beispiel: "Die Anwältin vertritt den Mandanten." },
+      { verb: "aufbewahren", erklaerung: "sicher aufheben", beispiel: "Dokumente sollte man trocken aufbewahren." },
+      { verb: "umgehen (mit)", erklaerung: "mit etwas fertigwerden; behandeln", beispiel: "Er kann gut mit Druck umgehen." },
+      { verb: "sich entscheiden (für)", erklaerung: "eine Wahl treffen", beispiel: "Sie entschied sich für Informatik." },
+      { verb: "sich erinnern (an)", erklaerung: "an Vergangenes denken", beispiel: "Ich erinnere mich an den ersten Day." },
+      { verb: "gelingen", erklaerung: "erfolgreich sein; klappen", beispiel: "Der Plan ist schließlich gelungen." },
+      { verb: "scheitern", erklaerung: "keinen Erfolg haben; misslingen", beispiel: "Das Projekt scheiterte an der Finanzierung." }
+    ];
+
+    const app = document.getElementById('app');
+    let order = [], idx = 0, score = 0, showAnswer = false, current = null, options = [], selectedOpt = null;
+
+    function shuffle(a){ return a.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]); }
+    function setup(){ order = shuffle([...Array(DATA.length).keys()]); idx=0; score=0; next(); }
+
+    function buildOptions(){
+      const others = shuffle(DATA.filter(d=>d.verb!==current.verb)).slice(0,2);
+      options = shuffle([current, ...others]).map(d=>d.erklaerung);
+    }
+
+    function select(opt){
+      if(showAnswer) return;
+      selectedOpt = opt;
+      showAnswer = true;
+      if(opt===current.erklaerung) score++;
+      render();
+    }
+
+    function next(){
+      showAnswer = false;
+      selectedOpt = null;
+      current = DATA[order[idx]];
+      buildOptions();
+      render();
+      idx = (idx+1 < order.length) ? idx+1 : 0;
+    }
+
+    function render(){
+      const progress = Math.round(((idx+1)/DATA.length)*100);
+      app.innerHTML = `
+        <div class="mb-6 flex items-center justify-between">
+          <div>
+            <div class="text-sm text-gray-500">Puan</div>
+            <div class="text-xl font-semibold">${score} <span class="text-gray-400 text-base">/ ${idx+1}</span></div>
+          </div>
+          <div class="text-sm text-gray-500">${idx+1} / ${DATA.length}</div>
+        </div>
+
+        <div class="w-full bg-gray-200 rounded-full h-2 mb-6 overflow-hidden">
+          <div class="h-2 rounded-full bg-gradient-to-r from-gray-900 to-gray-600 transition-all duration-300" style="width:${progress}%"></div>
+        </div>
+
+        <section class="bg-white/90 backdrop-blur rounded-3xl shadow-xl p-6 md:p-8 border border-gray-100">
+          <div class="mb-2 text-xs uppercase tracking-wider text-gray-500">Verb</div>
+          <div class="text-2xl md:text-3xl font-bold mb-4">${current.verb}</div>
+          <div class="mb-4 text-sm text-gray-500">Doğru <span class="font-medium">açıklamayı</span> seç:</div>
+
+          <div class="grid gap-3">
+            ${options.map((opt,i)=>`
+              <button data-opt="${i}" class="${(() => {
+                const base = 'opt text-left border rounded-xl px-4 py-3 transition focus:outline-none focus:ring-2 focus:ring-gray-300 ';
+                if (showAnswer) {
+                  if (opt === current.erklaerung) return base + 'border-green-500 ring-2 ring-green-200 bg-green-50';
+                  if (selectedOpt === opt) return base + 'border-red-500 ring-2 ring-red-200 bg-red-50';
+                  return base + 'opacity-80';
+                }
+                return base + 'hover:border-gray-400 hover:shadow-sm bg-white';
+              })()}" aria-pressed="${selectedOpt===opt}">
+                <span class="block text-xs uppercase tracking-wide text-gray-500">Seçenek ${i+1}</span>
+                <span class="block text-base md:text-lg">${opt}</span>
+              </button>
+            `).join('')}
+          </div>
+
+          ${showAnswer ? `
+            <div class="mt-6 p-4 border rounded-xl bg-gray-50">
+              <div class="text-sm text-gray-600 mb-1">Beispielsatz</div>
+              <div class="text-base md:text-lg">${current.beispiel}</div>
+              <div class="mt-2 text-sm text-gray-600">Doğru açıklama: <span class="font-medium">${current.erklaerung}</span></div>
+            </div>` : ''}
+
+          <div class="mt-6 flex items-center gap-3">
+            ${showAnswer
+              ? `<button id="next" class="px-5 py-2 rounded-xl bg-black text-white hover:opacity-90">Devam</button>`
+              : `<button class="px-5 py-2 rounded-xl bg-gray-200 text-gray-800" disabled>Bir seçenek seç</button>`}
+            <button id="restart" class="px-5 py-2 rounded-xl border">Baştan başla</button>
+          </div>
+        </section>
+      `;
+
+      document.querySelectorAll('.opt').forEach((btn,i)=>{ btn.onclick = ()=>select(options[i]); });
+      const nxt = document.getElementById('next');
+      if(nxt) nxt.onclick = ()=>next();
+      document.getElementById('restart').onclick = ()=>setup();
+    }
+
+    window.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && showAnswer) next(); });
+    setup();
+  </script>
+</body>
+</html>
